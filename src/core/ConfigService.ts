@@ -1,4 +1,4 @@
-import { JsonKeyValue, Optional } from "../types/common.types";
+import { JsonKeyValue } from "../types/common.types";
 import LocalCache from "./LocalCache";
 import StoreContract from "./StoreContract";
 
@@ -19,6 +19,9 @@ export default class ConfigService {
     }) {
         const { appId, env, version } = input;
         const config = await this.store.fetchConfig({ appId, env, version });
+        if (!config) {
+            throw new Error(`Config not found for appId: ${appId}, env: ${env}, version: ${version}`);
+        }
         this.localCache.setLocalConfig({ appId, env, version }, config);
     }
 
@@ -30,9 +33,8 @@ export default class ConfigService {
 
         if(!cached) {
             await this.updateCacheConfig({ appId, env, version });
+            cached = this.localCache.get({ appId, env, version, jsonQuery });
         }
-
-        cached = this.localCache.get({ appId, env, version, jsonQuery });
 
         return cached;
     }
