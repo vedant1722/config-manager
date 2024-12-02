@@ -4,11 +4,12 @@ import { Config, JsonObject } from "../types/common.types";
 import { ConfigModel } from "../types/mysql.schema";
 import { parseSafe } from "../utilities/json.utility";
 import LocalCache from "../core/LocalCache";
+import configEventEmitter from "../core/ConfigEventEmitter";
 
 export default class MysqlStore implements StoreContract {
     private manager: MysqlManager;
     
-    constructor(manager: MysqlManager, localCache: LocalCache, options: {
+    constructor(manager: MysqlManager, options: {
         pollIntervalInSeconds: number
     }) {
         this.manager = manager;
@@ -17,13 +18,7 @@ export default class MysqlStore implements StoreContract {
 
         setInterval(async () => {
             const results = await this.fetchChangedConfigs(pollIntervalInSeconds);
-            results.forEach(r => {
-                localCache.setLocalConfig({
-                    appId: r.appId,
-                    env: r.env,
-                    version: r.version,
-                }, r.config);
-            })
+            configEventEmitter.emitConfigUpdated(results);
         }, pollIntervalInSeconds * 1000);
     }
 

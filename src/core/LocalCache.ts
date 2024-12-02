@@ -24,6 +24,14 @@ export default class LocalCache {
         this.cache[appId][env][version] = config;
     }
 
+    public setManyLocalConfigs(data: {
+        appId: string, env: string, version: string, config: Config
+    }[]) {
+        for(const { appId, env, version, config } of data) {
+            this.setLocalConfig({ appId, env, version }, config);
+        }
+    }
+
     public get(input: {
         appId: string, env: string, version: string, jsonQuery: string
     }) {
