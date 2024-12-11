@@ -4,6 +4,7 @@ import { Config, JsonObject } from "../types/common.types";
 import { ConfigModel } from "../types/mysql.schema";
 import { parseSafe } from "../utilities/json.utility";
 import configEventEmitter from "../core/ConfigEventEmitter";
+import container from "../core/container";
 
 export default class MysqlStore extends StoreContract {
     private manager: MysqlManager;
@@ -18,7 +19,7 @@ export default class MysqlStore extends StoreContract {
 
         setInterval(async () => {
             const results = await this.fetchChangedConfigs(pollIntervalInSeconds);
-            configEventEmitter.emitConfigUpdated(results);
+            container.cradle.configEventEmitter.emitConfigUpdated(results);
         }, pollIntervalInSeconds * 1000);
     }
 
