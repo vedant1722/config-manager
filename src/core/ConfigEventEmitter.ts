@@ -9,17 +9,17 @@ type ConfigUpdateEvent = Array<{
 }>;
 
 export default class ConfigEventEmitter extends EventEmitter {
-    static readonly EVENTS = {
+    private readonly EVENTS = {
         CONFIG_UPDATED: 'configUpdated',
     };
 
     // Emit an event when configurations are updated
     emitConfigUpdated(event: ConfigUpdateEvent) {
-        this.emit(ConfigEventEmitter.EVENTS.CONFIG_UPDATED, event);
+        this.emit(this.EVENTS.CONFIG_UPDATED, event);
     }
 
     // Subscribe to the config updated event
     onConfigUpdated(listener: (event: ConfigUpdateEvent) => void) {
-        this.on(ConfigEventEmitter.EVENTS.CONFIG_UPDATED, listener);
+        this.on(this.EVENTS.CONFIG_UPDATED, listener);
     }
 }
