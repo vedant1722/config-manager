@@ -1,4 +1,4 @@
-import grpc, { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
+import { status as grpcStatus, sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import container from "../../core/container";
 
 type GetRequest = {
@@ -35,8 +35,9 @@ export async function getHandler(
 		callback(null, { value: JSON.stringify(value) });
 	} catch (error) {
 		// todo: log
+		console.log("getHandler err:", error)
 		callback({
-			code: grpc.status.INTERNAL,
+			code: grpcStatus.INTERNAL,
 			message: 'An internal error occurred.',
 		});
 	}
@@ -57,8 +58,9 @@ export const getManyHandler = async (
 		callback(null, { values: stringifiedValues });
 	} catch (error) {
 		// todo: log
+		console.log("getManyHandler err:", error)
 		callback({
-			code: grpc.status.INTERNAL,
+			code: grpcStatus.INTERNAL,
 			message: 'An internal error occurred.',
 		});
 	}

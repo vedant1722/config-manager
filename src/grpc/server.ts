@@ -1,12 +1,12 @@
 import path from "path";
-import protoLoader from "@grpc/proto-loader"
+import { loadSync } from "@grpc/proto-loader"
 import { Server, ServerCredentials, loadPackageDefinition } from "@grpc/grpc-js";
 import { getHandler, getManyHandler } from "./handlers/configHandlers";
 
 const PROTO_PATH = path.resolve(__dirname, "../../proto/config.proto");
 
 export function initializeServer(port: number) {
-	const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+	const packageDefinition = loadSync(PROTO_PATH, {
 		keepCase: true,
 		longs: String,
 		enums: String,
@@ -30,7 +30,6 @@ export function initializeServer(port: number) {
 		if (err) {
 			throw new Error(`Failed to start server: ${err.message}`);
 		}
-		server.start();
 	});
 }
 

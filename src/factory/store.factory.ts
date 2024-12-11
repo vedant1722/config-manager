@@ -11,6 +11,7 @@ function makeMysqlStore(mysqlConfig: Optional<MysqlStoreConfig>) {
 
     const mysqlManager = new MysqlManager({
         host: mysqlConfig.host,
+        port: mysqlConfig.port,
         user: mysqlConfig.user,
         password: mysqlConfig.password,
         database: mysqlConfig.database,

@@ -1,4 +1,4 @@
-import { createContainer } from "awilix";
+import { createContainer, InjectionMode } from "awilix";
 import LocalCache from "./LocalCache";
 import ConfigEventEmitter from "./ConfigEventEmitter";
 import StoreContract from "./StoreContract";
@@ -13,6 +13,8 @@ type Cradle = {
     configService: ConfigService,
 };
 
-const container = createContainer<Cradle>();
+const container = createContainer<Cradle>({
+    injectionMode: InjectionMode.CLASSIC
+});
 
 export default container;

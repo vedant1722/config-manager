@@ -8,6 +8,7 @@ export class MysqlManager {
         this.pool = mysql.createPool({
             host: conn.host,
             user: conn.user,
+            port: conn.port,
             database: conn.database,
             password: conn.password,
             waitForConnections: conn.waitForConnections,
@@ -30,3 +31,8 @@ export class MysqlManager {
         }
     }
 }
+
+/**
+ * Migration queries
+ * CREATE TABLE `config_store`.`configs` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `appId` VARCHAR(36) NOT NULL , `env` VARCHAR(255) NOT NULL , `version` VARCHAR(255) NOT NULL , `config` JSON NOT NULL , `updatedAt` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ */

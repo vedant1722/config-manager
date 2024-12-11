@@ -1,9 +1,6 @@
 import StoreContract from "../core/StoreContract";
 import { MysqlManager } from "../database/mysql.db";
-import { Config, JsonObject } from "../types/common.types";
 import { ConfigModel } from "../types/mysql.schema";
-import { parseSafe } from "../utilities/json.utility";
-import configEventEmitter from "../core/ConfigEventEmitter";
 import container from "../core/container";
 
 export default class MysqlStore extends StoreContract {
@@ -29,7 +26,7 @@ export default class MysqlStore extends StoreContract {
             sql: `SELECT config FROM configs WHERE appId = ? AND env = ? AND version = ?`,
             values: [appId, env, version]
         });
-        return Array.isArray(results) && results.length > 0 ? parseSafe<Config, null>(results[0].config, null) : null;
+        return Array.isArray(results) && results.length > 0 ? results[0].config : null;
     }
 
     async fetchChangedConfigs(timeInSeconds: number) {
@@ -38,9 +35,6 @@ export default class MysqlStore extends StoreContract {
             values: [timeInSeconds]
         });
 
-        return results.map((config) => ({
-            ...config,
-            config: parseSafe<Config, JsonObject>(config.config, {})
-        }));
+        return results;
     }
 }

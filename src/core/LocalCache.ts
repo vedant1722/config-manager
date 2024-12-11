@@ -1,27 +1,27 @@
 import { Config } from "../types/common.types";
-import { LocalCacheObject, LocalConfig } from "../types/localCache.types";
-
 export default class LocalCache {
-    protected cache: LocalCacheObject;
+    protected keySeparator = "|"
+    protected cache: Map<string, Config>;
 
     constructor() {
-        this.cache = {};
+        this.cache = new Map();
+    }
+
+    makeKey({ appId, env, version }: {
+        appId: string,
+        env: string,
+        version: string
+    }) {
+        return `a:${appId}${this.keySeparator}e:${env}${this.keySeparator}v:${version}`;
     }
 
     public setLocalConfig(input: {
         appId: string, env: string, version: string
     }, config: Config) {
         const { appId, env, version } = input;
-        
-        if(!this.cache[appId]) {
-            this.cache[appId] = {};
-        }
 
-        if(!this.cache[appId][env]) {
-            this.cache[appId][env] = {};
-        }
-
-        this.cache[appId][env][version] = config;
+        const key = this.makeKey({ appId, env, version });
+        this.cache.set(key, config);
     }
 
     public setManyLocalConfigs(data: {
@@ -36,7 +36,8 @@ export default class LocalCache {
         appId: string, env: string, version: string, jsonQuery: string
     }) {
         const { appId, env, version, jsonQuery } = input;
-        const config = this.cache[appId][env][version] || null;
+        const key = this.makeKey({ appId, env, version });
+        const config = this.cache.get(key) || null;
 
         if(!config) {
             return undefined;

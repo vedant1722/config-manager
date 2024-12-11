@@ -5,6 +5,7 @@ export function parseSafe<T=JsonObject, U = unknown>(str: string, defaultValue: 
         return JSON.parse(str);
     } catch (e) {
         // @todo: log
+        console.log("parseSafe err", str, defaultValue, e)
         return defaultValue;
     }
 }

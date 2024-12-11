@@ -2,6 +2,7 @@ import { StoreName } from "./common.types"
 
 export type MysqlStoreConfig = {
     host: string,
+    port?: number,
     user: string,
     password: string,
     database: string,
