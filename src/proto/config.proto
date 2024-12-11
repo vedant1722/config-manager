@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+service ConfigService {
+  rpc Get (GetRequest) returns (GetResponse);
+  rpc GetMany (GetManyRequest) returns (GetManyResponse);
+}
+
+message GetRequest {
+  string appId = 1;
+  string env = 2;
+  string version = 3;
+  string key = 4;
+}
+
+message GetResponse {
+  string value = 1;
+}
+
+message GetManyRequest {
+  string appId = 1;
+  string env = 2;
+  string version = 3;
+  repeated string keys = 4;
+}
+
+message GetManyResponse {
+  map<string, string> values = 1;
+}

@@ -1,4 +1,4 @@
-import { JsonKeyValue } from "../types/common.types";
+import { JsonKeyValue, Optional } from "../types/common.types";
 import LocalCache from "./LocalCache";
 import StoreContract from "./StoreContract";
 
@@ -6,10 +6,10 @@ export default class ConfigService {
     protected store: StoreContract;
     protected localCache: LocalCache;
 
-    constructor({ store, localCache }: {
+    constructor(
         store: StoreContract,
-        localCache: LocalCache
-    }) {
+        localCache: LocalCache,
+    ) {
         this.store = store;
         this.localCache = localCache;
     }
@@ -27,7 +27,7 @@ export default class ConfigService {
 
     async findOrUpdateCache(input: {
         appId: string, env: string, version: string, jsonQuery: string
-    }) {
+    }): Promise<Optional<JsonKeyValue>> {
         const { appId, env, version, jsonQuery } = input;
         let cached = this.localCache.get({ appId, env, version, jsonQuery });
 

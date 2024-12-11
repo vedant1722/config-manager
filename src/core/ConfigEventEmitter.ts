@@ -8,7 +8,7 @@ type ConfigUpdateEvent = Array<{
     config: Record<string, any>;
 }>;
 
-class ConfigEventEmitter extends EventEmitter {
+export default class ConfigEventEmitter extends EventEmitter {
     static readonly EVENTS = {
         CONFIG_UPDATED: 'configUpdated',
     };
@@ -23,6 +23,3 @@ class ConfigEventEmitter extends EventEmitter {
         this.on(ConfigEventEmitter.EVENTS.CONFIG_UPDATED, listener);
     }
 }
-
-const configEventEmitter = new ConfigEventEmitter();
-export default configEventEmitter;

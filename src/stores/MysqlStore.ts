@@ -3,15 +3,15 @@ import { MysqlManager } from "../database/mysql.db";
 import { Config, JsonObject } from "../types/common.types";
 import { ConfigModel } from "../types/mysql.schema";
 import { parseSafe } from "../utilities/json.utility";
-import LocalCache from "../core/LocalCache";
 import configEventEmitter from "../core/ConfigEventEmitter";
 
-export default class MysqlStore implements StoreContract {
+export default class MysqlStore extends StoreContract {
     private manager: MysqlManager;
     
     constructor(manager: MysqlManager, options: {
         pollIntervalInSeconds: number
     }) {
+        super()
         this.manager = manager;
 
         const pollIntervalInSeconds = options.pollIntervalInSeconds > 0 ? options.pollIntervalInSeconds : 10;

@@ -48,6 +48,3 @@ export default class LocalCache {
         return config[jsonQuery];
     }
 }
-
-const localCache = new LocalCache();
-export { localCache };
