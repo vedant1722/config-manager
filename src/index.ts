@@ -28,3 +28,13 @@ import { initializeServer } from "./grpc/server";
     // server setup
     initializeServer(container.cradle.config.port);
 })();
+
+process.on('uncaughtException', (err) => {
+    // todo: user logger
+    console.error('Unhandled Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    // todo: use logger
+    console.error('Unhandled Rejection:', reason);
+});
