@@ -13,3 +13,7 @@ export type JsonObject = {
 }
 
 export type Config = JsonObject;
+
+export enum StoreName {
+    mysql = 'mysql'
+}

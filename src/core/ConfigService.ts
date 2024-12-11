@@ -6,10 +6,10 @@ export default class ConfigService {
     protected store: StoreContract;
     protected localCache: LocalCache;
 
-    constructor({ store, localCache }: {
+    constructor(
         store: StoreContract,
-        localCache: LocalCache
-    }) {
+        localCache: LocalCache,
+    ) {
         this.store = store;
         this.localCache = localCache;
     }
@@ -19,20 +19,22 @@ export default class ConfigService {
     }) {
         const { appId, env, version } = input;
         const config = await this.store.fetchConfig({ appId, env, version });
+        if (!config) {
+            throw new Error(`Config not found for appId: ${appId}, env: ${env}, version: ${version}`);
+        }
         this.localCache.setLocalConfig({ appId, env, version }, config);
     }
 
     async findOrUpdateCache(input: {
         appId: string, env: string, version: string, jsonQuery: string
-    }) {
+    }): Promise<Optional<JsonKeyValue>> {
         const { appId, env, version, jsonQuery } = input;
         let cached = this.localCache.get({ appId, env, version, jsonQuery });
 
         if(!cached) {
             await this.updateCacheConfig({ appId, env, version });
+            cached = this.localCache.get({ appId, env, version, jsonQuery });
         }
-
-        cached = this.localCache.get({ appId, env, version, jsonQuery });
 
         return cached;
     }
