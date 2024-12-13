@@ -1,51 +1,41 @@
-import { Config } from "../types/common.types";
+import { JsonKeyValue } from "../types/common.types";
+
 export default class LocalCache {
-    protected keySeparator = "|"
-    protected cache: Map<string, Config>;
+    protected cache: Map<string, JsonKeyValue>;
 
     constructor() {
         this.cache = new Map();
     }
 
-    makeKey({ appId, env, version }: {
-        appId: string,
-        env: string,
-        version: string
-    }) {
-        return `a:${appId}${this.keySeparator}e:${env}${this.keySeparator}v:${version}`;
-    }
-
-    public setLocalConfig(input: {
-        appId: string, env: string, version: string
-    }, config: Config) {
-        const { appId, env, version } = input;
-
-        const key = this.makeKey({ appId, env, version });
-        this.cache.set(key, config);
+    public setLocalConfig(key: string, val: JsonKeyValue) {
+        this.cache.set(key, val);
     }
 
     public setManyLocalConfigs(data: {
-        appId: string, env: string, version: string, config: Config
+        key: string, val: JsonKeyValue
     }[]) {
-        for(const { appId, env, version, config } of data) {
-            this.setLocalConfig({ appId, env, version }, config);
+        for(const { key, val } of data) {
+            this.setLocalConfig(key, val);
         }
     }
 
-    public get(input: {
-        appId: string, env: string, version: string, jsonQuery: string
-    }) {
-        const { appId, env, version, jsonQuery } = input;
-        const key = this.makeKey({ appId, env, version });
-        const config = this.cache.get(key) || null;
+    public delete(key: string) {
+        this.cache.delete(key);
+    }
 
-        if(!config) {
+    public deleteMany(keys: string[]) {
+        for(const key of keys) {
+            this.delete(key);
+        }
+    }
+
+    public get<T=JsonKeyValue>(key: string) {
+        const val = this.cache.get(key) || null;
+
+        if(!val) {
             return undefined;
         }
 
-        /**
-         * @todo implement json query to get nested keys
-         */
-        return config[jsonQuery];
+        return val as T;
     }
 }

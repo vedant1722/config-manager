@@ -1,4 +1,4 @@
-import { JsonKeyValue, Optional } from "../types/common.types";
+import { JsonKeyValue, JsonObject, Optional } from "../types/common.types";
 import LocalCache from "./LocalCache";
 import StoreContract from "./StoreContract";
 
@@ -14,6 +14,16 @@ export default class ConfigService {
         this.localCache = localCache;
     }
 
+    protected keySeparator = "|";
+
+    makeKey({ appId, env, version }: {
+        appId: string,
+        env: string,
+        version: string
+    }) {
+        return `a:${appId}${this.keySeparator}e:${env}${this.keySeparator}v:${version}`;
+    }
+
     private async updateCacheConfig(input: {
         appId: string, env: string, version: string
     }) {
@@ -22,21 +32,27 @@ export default class ConfigService {
         if (!config) {
             throw new Error(`Config not found for appId: ${appId}, env: ${env}, version: ${version}`);
         }
-        this.localCache.setLocalConfig({ appId, env, version }, config);
+
+        const key = this.makeKey({ appId, env, version });
+        this.localCache.setLocalConfig(key, config);
     }
 
     async findOrUpdateCache(input: {
         appId: string, env: string, version: string, jsonQuery: string
     }): Promise<Optional<JsonKeyValue>> {
         const { appId, env, version, jsonQuery } = input;
-        let cached = this.localCache.get({ appId, env, version, jsonQuery });
+        const key = this.makeKey({ appId, env, version });
+        let config = this.localCache.get<JsonObject>(key);
 
-        if(!cached) {
+        if(!config) {
             await this.updateCacheConfig({ appId, env, version });
-            cached = this.localCache.get({ appId, env, version, jsonQuery });
+            config = this.localCache.get<JsonObject>(key);
         }
 
-        return cached;
+        /**
+         * @todo implement json query to get nested keys
+         */
+        return config ? config[jsonQuery]: undefined;
     }
 
     public async get(input: {
@@ -54,5 +70,12 @@ export default class ConfigService {
         }
 
         return output;
+    }
+
+    async handleConfigsUpdatedEvent(configs: { appId: string, env: string, version: string }[]) {
+        for(const { appId, env, version } of configs) {
+            const key = this.makeKey({ appId, env, version });
+            this.localCache.delete(key);
+        }
     }
 }
