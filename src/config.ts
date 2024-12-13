@@ -23,6 +23,24 @@ export function getAppConfig() {
         }
     }
 
+    if(config.storeName == StoreName.postgres) {
+        const connectionString = process.env.POSTGRES_CONNECTION_STRING as string;
+        if(connectionString) {
+            config.postgresStoreConfig = {
+                connectionString
+            }
+        } else {
+            config.postgresStoreConfig = {
+                host: process.env.POSTGRES_HOST as string,
+                port: +(process.env.POSTGRES_PORT as string) || undefined,
+                user: process.env.POSTGRES_USER as string,
+                password: process.env.POSTGRES_PASSWORD as string,
+                database: process.env.POSTGRES_DATABASE as string
+                // todo: extend postgres all pollconfig through env 
+            }
+        }
+    }
+
     // todo: validate config
 
     return config;

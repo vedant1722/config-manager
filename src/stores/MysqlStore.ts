@@ -15,7 +15,7 @@ export default class MysqlStore extends StoreContract {
         const pollIntervalInSeconds = options.pollIntervalInSeconds > 0 ? options.pollIntervalInSeconds : 10;
 
         setInterval(async () => {
-            const results = await this.fetchChangedConfigs(pollIntervalInSeconds);
+            const results = await this.fetchChangedConfigDetails(pollIntervalInSeconds);
             container.cradle.configEventEmitter.emitConfigUpdated(results);
         }, pollIntervalInSeconds * 1000);
     }
@@ -29,9 +29,9 @@ export default class MysqlStore extends StoreContract {
         return Array.isArray(results) && results.length > 0 ? results[0].config : null;
     }
 
-    async fetchChangedConfigs(timeInSeconds: number) {
-        const results = await this.manager.execute<Omit<ConfigModel, "id" | "updatedAt">[]>({
-            sql: `SELECT appId, env, version, config FROM configs WHERE updatedAt >= NOW() - INTERVAL ? SECOND`,
+    async fetchChangedConfigDetails(timeInSeconds: number) {
+        const results = await this.manager.execute<Pick<ConfigModel, "appId" | "env" | "version">[]>({
+            sql: `SELECT appId, env, version FROM configs WHERE updatedAt >= NOW() - INTERVAL ? SECOND`,
             values: [timeInSeconds]
         });
 

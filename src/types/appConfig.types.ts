@@ -1,4 +1,5 @@
 import { StoreName } from "./common.types"
+import { PoolConfig as PostgresConfig } from "pg";
 
 export type MysqlStoreConfig = {
     host: string,
@@ -17,5 +18,6 @@ export type MysqlStoreConfig = {
 export type $AppConfig = {
     port: number,
     storeName: StoreName,
-    mysqlStoreConfig?: MysqlStoreConfig
+    mysqlStoreConfig?: MysqlStoreConfig,
+    postgresStoreConfig?: PostgresConfig
 }
