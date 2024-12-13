@@ -4,7 +4,7 @@ export type Optional<T> = T | undefined;
 
 export type Primitive = string | number | boolean;
 
-export type NullablePrimitive = Primitive | null;
+export type NullablePrimitive = Nullable<Primitive>;
 
 export type JsonKeyValue = NullablePrimitive | JsonObject | Array<NullablePrimitive | JsonObject>;
 
@@ -12,8 +12,7 @@ export type JsonObject = {
     [key: string]: JsonKeyValue;
 }
 
-export type Config = JsonObject;
-
 export enum StoreName {
-    mysql = 'mysql'
+    mysql = 'mysql',
+    postgres = 'postgres',
 }

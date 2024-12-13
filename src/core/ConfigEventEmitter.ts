@@ -5,7 +5,6 @@ type ConfigUpdateEvent = Array<{
     appId: string;
     env: string;
     version: string;
-    config: Record<string, any>;
 }>;
 
 export default class ConfigEventEmitter extends EventEmitter {

@@ -1,6 +1,6 @@
 import { JsonObject, Optional } from "../types/common.types";
 
-export function parseSafe<T=JsonObject, U = unknown>(str: string, defaultValue: any): T | U {
+export function parseSafe<T=JsonObject, U=unknown>(str: string, defaultValue: U): T | U {
     try {
         return JSON.parse(str);
     } catch (e) {
